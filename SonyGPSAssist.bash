@@ -72,7 +72,7 @@ function echo_bin () {
 
 # List all mount points which are of VFAT filesystem
 function list_vfat_mount () {
-    df -l -t vfat | tail -n +2 | grep -o '[^ ]*$'
+    df -l -t vfat 2> /dev/null | tail -n +2 | grep -o '[^ ]*$'
 }
 
 # Read mount directories on the standard input and only those which contains
@@ -91,6 +91,9 @@ function filter_sony () {
 check_command curl
 check_command md5sum
 check_command base64
+
+# Exit immediately if there is no VFAT filesystem
+list_vfat_mount > /dev/null || exit 1
 
 # Retrieve GPS data and MD5 from Sony site
 gps_data=$(try "Get GPS data from Sony" http_get_bin "$GPSDATA")
@@ -112,4 +115,3 @@ do
     try "Create $mountdir/$SONYGPSDIR/assistme.dat" \
         echo_bin "$gps_data" > "$mountdir/$SONYGPSDIR/assistme.dat"
 done
-
