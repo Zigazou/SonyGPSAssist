@@ -17,7 +17,7 @@ SonyGPSAssist.bash works in the following order:
 - download the GPS assist data from Sony website,
 - download the MD5 from Sony website,
 - compare the MD5,
-- look for each mount point which is FAT formatted and contains a PRIVATE/SONY
+- look for each mount point which is VFAT or exFAT formatted and contains a PRIVATE/SONY
   directory that is also writable by the current user,
 - create the directory PRIVATE/SONY/GPS if it does not already exist,
 - write the GPS data into this directory.

@@ -70,9 +70,9 @@ function echo_bin () {
     printf '%s' "$1" | base64 --decode
 }
 
-# List all mount points which are of VFAT filesystem
-function list_vfat_mount () {
-    df -l -t vfat 2> /dev/null | tail -n +2 | grep -o '[^ ]*$'
+# List all mount points which are of FAT filesystem
+function list_fat_mount () {
+    df -l -t vfat -t exfat 2> /dev/null | tail -n +2 | grep -o '[^ ]*$'
 }
 
 # Read mount directories on the standard input and only those which contains
@@ -92,8 +92,8 @@ check_command curl
 check_command md5sum
 check_command base64
 
-# Exit immediately if there is no VFAT filesystem
-list_vfat_mount > /dev/null || exit 1
+# Exit immediately if there is no FAT filesystem
+list_fat_mount > /dev/null || exit 1
 
 # Retrieve GPS data and MD5 from Sony site
 gps_data=$(try "Get GPS data from Sony" http_get_bin "$GPSDATA")
@@ -104,8 +104,8 @@ gps_true_md5=$(echo_bin "$gps_data" | md5sum | cut -d " " -f 1)
 
 try "Check MD5" test "$gps_true_md5" = "$gps_md5"
 
-# For each VFAT filesystem which has Sony directories...
-list_vfat_mount | filter_sony | while read mountdir
+# For each FAT filesystem which has Sony directories...
+list_fat_mount | filter_sony | while read mountdir
 do
     # Create the GPS directory
     try "Create $mountdir/$SONYGPSDIR" \
